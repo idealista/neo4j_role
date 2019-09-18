@@ -1,0 +1,6 @@
+---
+
+- name: Converge
+  hosts: all
+  roles:
+    - neo4j_role

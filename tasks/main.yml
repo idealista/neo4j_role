@@ -1,0 +1,16 @@
+---
+
+- name: neo4j | Install
+  import_tasks: install.yml
+  tags:
+    - install_neo4j
+
+- name: neo4j | Configure Service
+  import_tasks: config.yml
+  tags:
+    - configure_neo4j
+
+- name: neo4j | Service
+  import_tasks: service.yml
+  tags:
+    - service_neo4j

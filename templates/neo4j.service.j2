@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Neo4j Graph Database Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart={{ neo4j_installation_path }}/bin/neo4j console
+Restart=on-failure
+User={{ neo4j_user }}
+Group={{ neo4j_group }}
+Environment="NEO4J_CONF={{ neo4j_config_path }}"
+LimitNOFILE={{ neo4j_max_filedescriptors }}
+TimeoutSec={{ neo4j_service_timeout }}
+
+[Install]
+WantedBy=multi-user.target

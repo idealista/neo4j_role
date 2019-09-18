@@ -1,0 +1,9 @@
+---
+
+- name: neo4j | Copy configuration
+  template:
+    src: neo4j.conf.j2
+    dest: "{{ neo4j_config_path }}/neo4j.conf"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_group }}"
+  notify: restart neo4j
