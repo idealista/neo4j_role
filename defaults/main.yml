@@ -1,0 +1,78 @@
+---
+# General
+
+neo4j_version: 3.5.9
+
+## Owner
+neo4j_user: neo4j
+neo4j_group: neo4j
+
+## Service options
+neo4j_service_enabled: true # start on boot
+neo4j_service_state: started # current state: started, stopped
+neo4j_service_timeout: 120
+neo4j_max_filedescriptors: 60000
+
+## Files & Paths
+neo4j_installation_path: /var/lib/neo4j
+neo4j_log_path: /var/log/neo4j
+neo4j_config_path: /etc/neo4j
+
+# CONF
+
+## SECURITY
+neo4j_auth_enabled: "true"
+neo4j_admin_password: admin # Change this password asap
+
+## JVM
+neo4j_java_xms: 512m
+neo4j_java_xmx: 512m
+neo4j_jvm_additional:
+  - -XX:+UseG1GC
+  - -XX:-OmitStackTraceInFastThrow
+  - -XX:+AlwaysPreTouch
+  - -XX:+UnlockExperimentalVMOptions
+  - -XX:+TrustFinalNonStaticFields
+  - -XX:+DisableExplicitGC
+  - -Djdk.tls.ephemeralDHKeySize=2048
+  - -Djdk.tls.rejectClientInitiatedRenegotiation=true
+  - -Dunsupported.dbms.udc.source=debian
+  - "-Djava.rmi.server.hostname={{ ansible_nodename }}"
+  - -Dcom.sun.management.jmxremote=true
+  - -Dcom.sun.management.jmxremote.port=3637
+  - -Dcom.sun.management.jmxremote.local.only=false
+  - -Dcom.sun.management.jmxremote.authenticate=false
+  - -Dcom.sun.management.jmxremote.ssl=false
+
+## CACHE
+neo4j_memory_pagecache_size: 512m
+
+## NETWORK
+neo4j_address: 0.0.0.0
+neo4j_address_name: "{{ ansible_nodename }}"
+neo4j_bolt_enabled: "true"
+neo4j_bolt_port: 7687
+neo4j_http_enabled: "true"
+neo4j_http_port: 7474
+neo4j_https_enabled: "true"
+neo4j_https_port: 7473
+
+## LOGGING
+neo4j_log_http_enabled: "true"
+neo4j_log_http_rotation_keep_number: 5
+neo4j_log_http_rotation_size: 20m
+neo4j_log_gc_enabled: "true"
+neo4j_log_gc_options: -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationStoppedTime -XX:+PrintPromotionFailure -XX:+PrintTenuringDistribution
+# see http://docs.oracle.com/cd/E19957-01/819-0084-10/pt_tuningjava.html#wp57013 for more information.
+# For Java 9 and newer GC Logging Options
+# see https://docs.oracle.com/javase/10/tools/java.htm#JSWOR-GUID-BE93ABDC-999C-4CB5-A88B-1994AAAC74D5
+# neo4j_log_gc_options-Xlog:gc*,safepoint,age*=trace
+neo4j_log_gc_rotation_keep_number: 5
+neo4j_log_gc_rotation_size: 20m
+neo4j_log_debug_level: INFO
+neo4j_log_debug_rotation_keep_number: 7
+neo4j_log_debug_rotation_size: 20m
+
+
+# MISCELLANEOUS
+neo4j_force_reinstall: false

@@ -1,0 +1,6 @@
+---
+- name: restart neo4j
+  systemd:
+    name: neo4j
+    state: restarted
+  when: neo4j_service_state != 'stopped'
