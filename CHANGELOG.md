@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+### Fixed
+- *[#2](https://github.com/idealista/noe4j_role/issues/2) Fix docker image* @jmonterrubio
+
 
 ## [1.0.0] - 2019-09-18
 
