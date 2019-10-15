@@ -10,7 +10,7 @@ lint:
 platforms:
   - name: neo4j-stretch
     hostname: neo4j
-    image: idealista/jdk:8u212-stretch-openjdk-headless 
+    image: idealista/jdk:8u222-stretch-openjdk-headless 
     privileged: true
     capabilities:
       - SYS_ADMIN
