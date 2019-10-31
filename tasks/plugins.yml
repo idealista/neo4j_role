@@ -1,0 +1,8 @@
+---
+
+- name: neo4j | Get plugins
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ neo4j_plugins_path }}"
+  loop: "{{ neo4j_plugins }}"
+  notify: restart neo4j

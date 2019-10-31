@@ -1,3 +1,5 @@
+---
+
 group:
   {{ neo4j_group }}:
     exists: true

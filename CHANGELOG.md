@@ -7,6 +7,14 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+## [1.1.0] - 2019-10-31
+
+### Added
+
+- *[#6](https://github.com/idealista/neo4j_role/issues/6) Provide plugins installation/configuration* @jmonterrubio
+- *Update default version to 3.5.12* @jmonterrubio
+- *Default paths can be overriden* @jmonterrubio
+
 ## [1.0.1] - 2019-10-15
 
 ### Fixed
@@ -21,5 +29,6 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 - *First release* @jmonterrubio
 
 [Unreleased]: https://github.com/idealista/neo4j_role/tree/develop
+[1.1.0]: https://github.com/idealista/neo4j_role/tree/1.1.0
 [1.0.1]: https://github.com/idealista/neo4j_role/tree/1.0.1
 [1.0.0]: https://github.com/idealista/neo4j_role/tree/1.0.0

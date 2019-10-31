@@ -10,17 +10,17 @@
 #dbms.active_database=graph.db
 
 # Paths of directories in the installation.
-dbms.directories.data={{ neo4j_installation_path }}/data
-dbms.directories.plugins={{ neo4j_installation_path }}/plugins
-dbms.directories.certificates={{ neo4j_installation_path }}/certificates
+dbms.directories.data={{ neo4j_data_path }}
+dbms.directories.plugins={{ neo4j_plugins_path }}
+dbms.directories.certificates={{ neo4j_certificates_path }}
 dbms.directories.logs={{ neo4j_log_path }}
-dbms.directories.lib={{ neo4j_installation_path }}/lib
+dbms.directories.lib={{ neo4j_lib_path }}
 dbms.directories.run=/var/run/neo4j
 
 # This setting constrains all `LOAD CSV` import files to be under the `import` directory. Remove or comment it out to
 # allow files to be loaded from anywhere in the filesystem; this introduces possible security problems. See the
 # `LOAD CSV` section of the manual for details.
-dbms.directories.import={{ neo4j_installation_path }}/import
+dbms.directories.import={{ neo4j_import_path }}
 
 # Whether requests to Neo4j are authenticated.
 # To disable authentication, uncomment this line
@@ -298,3 +298,12 @@ dbms.jvm.additional={{ param }}
 
 # Name of the service
 dbms.windows_service_name=neo4j
+
+#********************************************************************
+# Plugins Properties
+#********************************************************************
+{% if neo4j_plugins_configuration is defined %}
+{% for param in neo4j_plugins_configuration %}
+{{ param.name }}={{ param.value }}
+{% endfor %}
+{% endif %}}
