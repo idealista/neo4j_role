@@ -10,6 +10,12 @@
   tags:
     - configure_neo4j
 
+- name: neo4j | Install plugins
+  import_tasks: plugins.yml
+  when: neo4j_plugins is defined
+  tags:
+    - plugins_neo4j
+
 - name: neo4j | Service
   import_tasks: service.yml
   tags:

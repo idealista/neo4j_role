@@ -6,7 +6,7 @@
     state: "{{ neo4j_service_state }}"
     enabled: "{{ neo4j_service_enabled }}"
     daemon_reload: yes
-  
+
 - name: neo4j | Restart now if needed
   meta: flush_handlers
 

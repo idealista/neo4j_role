@@ -29,13 +29,18 @@
     - "{{ neo4j_installation_path }}"
     - "{{ neo4j_log_path }}"
     - "{{ neo4j_config_path }}"
+    - "{{ neo4j_data_path }}"
+    - "{{ neo4j_plugins_path }}"
+    - "{{ neo4j_certificates_path }}"
+    - "{{ neo4j_lib_path }}"
+    - "{{ neo4j_import_path }}"
 
 - name: neo4j | Check neo4j version
   slurp:
     src: "{{ neo4j_installation_path }}/VERSION"
   register: neo4j_check
-  changed_when: false
-  ignore_errors: true
+  changed_when: no
+  ignore_errors: yes
 
 - name: neo4j | Stop service
   systemd:
@@ -51,7 +56,10 @@
     dest: "/tmp/{{ neo4j_package }}"
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
-  when: neo4j_force_reinstall or neo4j_check is failed or neo4j_check.content|b64decode != neo4j_version
+  when: >
+    neo4j_force_reinstall
+    or neo4j_check is failed
+    or neo4j_check.content|b64decode != neo4j_version
 
 - name: neo4j | Untar neo4j
   unarchive:
@@ -61,7 +69,10 @@
     dest: "{{ neo4j_installation_path }}"
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
-  when: neo4j_force_reinstall or neo4j_check is failed or neo4j_check.content|b64decode != neo4j_version
+  when: >
+    neo4j_force_reinstall
+    or neo4j_check is failed
+    or neo4j_check.content|b64decode != neo4j_version
 
 - name: neo4j | Fix permissions
   file:
@@ -69,7 +80,10 @@
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
     recurse: yes
-  when: neo4j_force_reinstall or neo4j_check is failed or neo4j_check.content|b64decode != neo4j_version
+  when: >
+    neo4j_force_reinstall
+    or neo4j_check is failed
+    or neo4j_check.content|b64decode != neo4j_version
 
 - name: neo4j | Set version file
   copy:
@@ -77,16 +91,19 @@
     dest: "{{ neo4j_installation_path }}/VERSION"
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
-  when: neo4j_force_reinstall or neo4j_check is failed or neo4j_check.content|b64decode != neo4j_version
+  when: >
+    neo4j_force_reinstall
+    or neo4j_check is failed
+    or neo4j_check.content|b64decode != neo4j_version
 
 - name: neo4j | Set admin password
   command: "bin/neo4j-admin set-initial-password {{ neo4j_admin_password }}"
   args:
     chdir: "{{ neo4j_installation_path }}"
-  become: true
+  become: yes
   become_user: "{{ neo4j_user }}"
   when: neo4j_force_reinstall or neo4j_check is failed
-  no_log: true
+  no_log: yes
 
 - name: neo4j | Copy Daemon script
   template:
