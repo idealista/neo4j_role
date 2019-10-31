@@ -24,7 +24,7 @@ These instructions will get you a copy of the role for your ansible playbook. On
 
 ### Prerequisities
 
-Ansible 2.8.4.0 version installed.
+Ansible 2.8.6 version installed.
 Inventory destination should be a Debian environment.
 
 Java must be installed to run the service. Check [System requirements](https://neo4j.com/docs/operations-manual/current/installation/requirements/) to see supported versions. Java can be installed using the [Idealista's Java Ansible role](https://github.com/idealista/java-role).
@@ -82,7 +82,7 @@ pipenv run molecule test
 
 ## Built With
 
-![Ansible](https://img.shields.io/badge/ansible-2.8.4.0-green.svg)
+![Ansible](https://img.shields.io/badge/ansible-2.8.6-green.svg)
 
 ## Versioning
 
