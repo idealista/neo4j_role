@@ -2,6 +2,8 @@
 
 ## neo4j
 
+neo4j_data_path: /neo4jdata
+
 neo4j_plugins:
   - name: neo4j-streams
     url: https://github.com/neo4j-contrib/neo4j-streams/releases/download/3.5.4/neo4j-streams-3.5.4.jar
