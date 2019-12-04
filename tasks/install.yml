@@ -96,15 +96,6 @@
     or neo4j_check is failed
     or neo4j_check.content|b64decode != neo4j_version
 
-- name: neo4j | Set admin password
-  command: "bin/neo4j-admin set-initial-password {{ neo4j_admin_password }}"
-  args:
-    chdir: "{{ neo4j_installation_path }}"
-  become: yes
-  become_user: "{{ neo4j_user }}"
-  when: neo4j_force_reinstall or neo4j_check is failed
-  no_log: yes
-
 - name: neo4j | Copy Daemon script
   template:
     src: neo4j.service.j2
