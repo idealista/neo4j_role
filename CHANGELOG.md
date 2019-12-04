@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+### Fixed
+
+- *[#9](https://github.com/idealista/neo4j_role/issues/9) Admin pass changes even if data path is not default one* @jmonterrubio
+
 ## [1.1.0] - 2019-10-31
 
 ### Added
