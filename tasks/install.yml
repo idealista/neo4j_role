@@ -7,16 +7,16 @@
 - name: neo4j | Ensure neo4j group
   group:
     name: "{{ neo4j_group }}"
-    system: yes
+    system: true
     state: present
 
 - name: neo4j | Ensure neo4j user
   user:
     name: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
-    system: yes
+    system: true
     shell: /sbin/nologin
-    create_home: no
+    create_home: false
 
 - name: neo4j | Create install path
   file:
@@ -40,8 +40,8 @@
   slurp:
     src: "{{ neo4j_installation_path }}/VERSION"
   register: neo4j_check
-  changed_when: no
-  ignore_errors: yes
+  changed_when: false
+  ignore_errors: true
 
 - name: neo4j | Stop service
   systemd:
@@ -66,7 +66,7 @@
   unarchive:
     extra_opts: ['--strip-components=1']
     src: "/tmp/{{ neo4j_package }}"
-    remote_src: yes
+    remote_src: true
     dest: "{{ neo4j_installation_path }}"
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
@@ -80,7 +80,7 @@
     dest: "{{ neo4j_installation_path }}"
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
-    recurse: yes
+    recurse: true
   when: >
     neo4j_force_reinstall
     or neo4j_check is failed
