@@ -41,4 +41,6 @@ rules:
   truthy: disable
 
 ignore: |
-  test_*.yml
+  .travis.yml
+  molecule/
+  tests/
