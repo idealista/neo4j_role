@@ -28,7 +28,7 @@ Due to modifications in the properties of the different major versions, the role
 
 ### Prerequisities
 
-Ansible 2.8.6 version installed.
+Ansible 2.8.8 version installed.
 Inventory destination should be a Debian environment.
 
 Java must be installed to run the service. Check [System requirements](https://neo4j.com/docs/operations-manual/current/installation/requirements/) to see supported versions. Java can be installed using the [Idealista's Java Ansible role](https://github.com/idealista/java-role).
