@@ -19,14 +19,16 @@
   become_user: "{{ neo4j_user }}"
   when: neo4j_force_reinstall or neo4j_check is failed
   no_log: yes
+  notify: restart neo4j
 
 - name: neo4j | Move auth file
   copy:
     src: "{{ neo4j_installation_path }}/data/dbms/auth.ini"
-    dest: "{{ neo4j_data_path }}/dbms/auth"
+    dest: "{{ neo4j_data_path }}/dbms/auth.ini"
     remote_src: yes
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
   when:
     - neo4j_force_reinstall or neo4j_check is failed
     - "'{{ neo4j_installation_path }}/data' != '{{ neo4j_data_path }}'"
+  notify: restart neo4j

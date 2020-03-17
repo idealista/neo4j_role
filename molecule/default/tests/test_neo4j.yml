@@ -37,7 +37,7 @@ port:
   tcp:{{ neo4j_bolt_port }}:
     listening: true
   tcp:{{ neo4j_https_port }}:
-    listening: true
+    listening: false
 
 service:
   neo4j:

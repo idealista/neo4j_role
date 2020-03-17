@@ -30,6 +30,7 @@
     - "{{ neo4j_log_path }}"
     - "{{ neo4j_config_path }}"
     - "{{ neo4j_data_path }}"
+    - "{{ neo4j_data_path }}/dbms"
     - "{{ neo4j_plugins_path }}"
     - "{{ neo4j_certificates_path }}"
     - "{{ neo4j_lib_path }}"

@@ -4,12 +4,12 @@
 
 neo4j_data_path: /neo4jdata
 
-neo4j_plugins:
-  - name: neo4j-streams
-    url: https://github.com/neo4j-contrib/neo4j-streams/releases/download/3.5.4/neo4j-streams-3.5.4.jar
-
-neo4j_plugins_configuration:
-  - name: kafka.zookeeper.connect
-    value: localhost:2181
-  - name: kafka.bootstrap.servers
-    value: localhost:9092
+# neo4j_plugins:
+#   - name: neo4j-streams
+#     url: https://github.com/neo4j-contrib/neo4j-streams/releases/download/4.0.0/neo4j-streams-4.0.0.jar
+# # https://github.com/neo4j-contrib/neo4j-streams/blob/4.0/doc/asciidoc/consumer/configuration.adoc
+# neo4j_plugins_configuration:
+#   - name: kafka.zookeeper.connect
+#     value: localhost:2181
+#   - name: kafka.bootstrap.servers
+#     value: localhost:9092
