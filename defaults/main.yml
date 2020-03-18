@@ -1,7 +1,7 @@
 ---
 # General
 
-neo4j_version: 3.5.12
+neo4j_version: 4.0.1
 
 ## Owner
 neo4j_user: neo4j
@@ -14,6 +14,7 @@ neo4j_service_timeout: 120
 neo4j_max_filedescriptors: 60000
 
 ## Files & Paths
+neo4j_default_database: neo4j
 neo4j_installation_path: /var/lib/neo4j
 neo4j_log_path: /var/log/neo4j
 neo4j_config_path: /etc/neo4j
@@ -33,6 +34,72 @@ neo4j_admin_password: admin  # Change this password asap
 ## JVM
 neo4j_java_xms: 512m
 neo4j_java_xmx: 512m
+
+# G1GC generally strikes a good balance between throughput and tail
+# latency, without too much tuning.
+# -XX:+UseG1GC
+
+# Have common exceptions keep producing stack traces, so they can be
+# debugged regardless of how often logs are rotated.
+# -XX:-OmitStackTraceInFastThrow
+
+# Make sure that `initmemory` is not only allocated, but committed to
+# the process, before starting the database. This reduces memory
+# fragmentation, increasing the effectiveness of transparent huge
+# pages. It also reduces the possibility of seeing performance drop
+# due to heap-growing GC events, where a decrease in available page
+# cache leads to an increase in mean IO response time.
+# Try reducing the heap memory, if this flag degrades performance.
+# -XX:+AlwaysPreTouch
+
+# Trust that non-static final fields are really final.
+# This allows more optimizations and improves overall performance.
+# NOTE: Disable this if you use embedded mode, or have extensions or dependencies that may use reflection or
+# serialization to change the value of final fields!
+# -XX:+UnlockExperimentalVMOptions
+# -XX:+TrustFinalNonStaticFields
+
+# Disable explicit garbage collection, which is occasionally invoked by the JDK itself.
+# -XX:+DisableExplicitGC
+
+# Restrict size of cached JDK buffers to 256 KB
+# -Djdk.nio.maxCachedBufferSize=262144
+
+# More efficient buffer allocation in Netty by allowing direct no cleaner buffers.
+# -Dio.netty.tryReflectionSetAccessible=true
+
+# Exits JVM on the first occurrence of an out-of-memory error. Its preferrable to restart
+# VM in case of out of memory errors.
+# -XX:+ExitOnOutOfMemoryError
+
+# Remote JMX monitoring
+# -Dcom.sun.management.jmxremote.port=3637
+# -Dcom.sun.management.jmxremote.authenticate=true
+# -Dcom.sun.management.jmxremote.ssl=false
+# -Dcom.sun.management.jmxremote.password.file=/absolute/path/to/conf/jmx.password
+# -Dcom.sun.management.jmxremote.access.file=/absolute/path/to/conf/jmx.access
+
+# Some systems cannot discover host name automatically, and need this line configured:
+# -Djava.rmi.server.hostname=$THE_NEO4J_SERVER_HOSTNAME
+
+# Expand Diffie Hellman (DH) key size from default 1024 to 2048 for DH-RSA cipher suites used in server TLS handshakes.
+# This is to protect the server from any potential passive eavesdropping.
+# -Djdk.tls.ephemeralDHKeySize=2048
+
+# This mitigates a DDoS vector.
+# -Djdk.tls.rejectClientInitiatedRenegotiation=true
+
+# Enable remote debugging
+# -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+
+# This filter prevents deserialization of arbitrary objects via java object serialization,
+# addressing potential vulnerabilities.
+# By default this filter whitelists all neo4j classes, as well as classes from the hazelcast
+# library and the java standard library.
+# These defaults should only be modified by expert users!
+# For more details (including filter syntax) see: https://openjdk.java.net/jeps/290
+# -Djdk.serialFilter=java.**;org.neo4j.**;com.neo4j.**;com.hazelcast.**;net.sf.ehcache.Element;com.sun.proxy.*;org.openjdk.jmh.**;!*
+
 neo4j_jvm_additional:
   - -XX:+UseG1GC
   - -XX:-OmitStackTraceInFastThrow
@@ -40,6 +107,9 @@ neo4j_jvm_additional:
   - -XX:+UnlockExperimentalVMOptions
   - -XX:+TrustFinalNonStaticFields
   - -XX:+DisableExplicitGC
+  - -XX:+ExitOnOutOfMemoryError
+  - -Djdk.nio.maxCachedBufferSize=262144
+  - -Dio.netty.tryReflectionSetAccessible=true
   - -Djdk.tls.ephemeralDHKeySize=2048
   - -Djdk.tls.rejectClientInitiatedRenegotiation=true
   - -Dunsupported.dbms.udc.source=debian
@@ -49,6 +119,7 @@ neo4j_jvm_additional:
   - -Dcom.sun.management.jmxremote.local.only=false
   - -Dcom.sun.management.jmxremote.authenticate=false
   - -Dcom.sun.management.jmxremote.ssl=false
+  - -Djdk.serialFilter=java.**;org.neo4j.**;com.neo4j.**;com.hazelcast.**;net.sf.ehcache.Element;com.sun.proxy.*;org.openjdk.jmh.**;!*
 
 ## CACHE
 neo4j_memory_pagecache_size: 512m
@@ -60,22 +131,19 @@ neo4j_bolt_enabled: "true"
 neo4j_bolt_port: 7687
 neo4j_http_enabled: "true"
 neo4j_http_port: 7474
-neo4j_https_enabled: "true"
+neo4j_https_enabled: "false"
 neo4j_https_port: 7473
+neo4j_threads_worker: 2
 
 ## LOGGING
 neo4j_log_http_enabled: "true"
 neo4j_log_http_rotation_keep_number: 5
 neo4j_log_http_rotation_size: 20m
 neo4j_log_gc_enabled: "true"
-neo4j_log_gc_options: -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationStoppedTime \
-  -XX:+PrintPromotionFailure -XX:+PrintTenuringDistribution
-# see http://docs.oracle.com/cd/E19957-01/819-0084-10/pt_tuningjava.html#wp57013 for more information.
-# For Java 9 and newer GC Logging Options
-# see https://docs.oracle.com/javase/10/tools/java.htm#JSWOR-GUID-BE93ABDC-999C-4CB5-A88B-1994AAAC74D5
-# neo4j_log_gc_options-Xlog:gc*,safepoint,age*=trace
+# see https://docs.oracle.com/en/java/javase/11/tools/java.html#GUID-BE93ABDC-999C-4CB5-A88B-1994AAAC74D5
+neo4j_log_gc_options: -Xlog:gc*,safepoint,age*=trace
 neo4j_log_gc_rotation_keep_number: 5
-neo4j_log_gc_rotation_size: 20m
+neo4j_log_gc_rotation_size: 20
 neo4j_log_debug_level: INFO
 neo4j_log_debug_rotation_keep_number: 7
 neo4j_log_debug_rotation_size: 20m
@@ -83,7 +151,7 @@ neo4j_log_debug_rotation_size: 20m
 ## PLUGINS (example)
 # neo4j_plugins:
 #   - name: neo4j-streams
-#     url: https://github.com/neo4j-contrib/neo4j-streams/releases/download/3.5.4/neo4j-streams-3.5.4.jar
+#     url: https://github.com/neo4j-contrib/neo4j-streams/releases/download/4.0.0/neo4j-streams-4.0.0.jar
 
 # neo4j_plugins_configuration:
 #   - name: kafka.zookeeper.connect

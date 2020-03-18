@@ -15,18 +15,20 @@
   command: "bin/neo4j-admin set-initial-password {{ neo4j_admin_password }}"
   args:
     chdir: "{{ neo4j_installation_path }}"
-  become: yes
+  become: true
   become_user: "{{ neo4j_user }}"
   when: neo4j_force_reinstall or neo4j_check is failed
-  no_log: yes
+  no_log: true
+  notify: restart neo4j
 
 - name: neo4j | Move auth file
   copy:
     src: "{{ neo4j_installation_path }}/data/dbms/auth.ini"
-    dest: "{{ neo4j_data_path }}/dbms/auth"
-    remote_src: yes
+    dest: "{{ neo4j_data_path }}/dbms/auth.ini"
+    remote_src: true
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
   when:
     - neo4j_force_reinstall or neo4j_check is failed
     - "'{{ neo4j_installation_path }}/data' != '{{ neo4j_data_path }}'"
+  notify: restart neo4j
