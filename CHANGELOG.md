@@ -7,9 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+## [2.0.0] - 2020-03-18
+
 ### Changed
 
-- *[#14](https://github.com/idealista/neo4j_role/issues/14) Upgrade default version to 4.x.x* @jmonterrubio
+- *[#14](https://github.com/idealista/neo4j_role/issues/14) Set default db version to 4.0.1* @jmonterrubio
 
 ## [1.1.1] - 2019-12-04
 
@@ -39,6 +41,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 - *First release* @jmonterrubio
 
 [Unreleased]: https://github.com/idealista/neo4j_role/tree/develop
+[2.0.0]: https://github.com/idealista/neo4j_role/tree/2.0.0
 [1.1.1]: https://github.com/idealista/neo4j_role/tree/1.1.1
 [1.1.0]: https://github.com/idealista/neo4j_role/tree/1.1.0
 [1.0.1]: https://github.com/idealista/neo4j_role/tree/1.0.1
