@@ -22,9 +22,13 @@ This Ansible role installs a Neo4j graph database **community** version in a Deb
 
 These instructions will get you a copy of the role for your ansible playbook. Once launched, it will install a [Neo4j graph database](https://neo4j.com/) in a Debian system.
 
+Upgrade major versions is not supported with this role.
+
+Due to modifications in the properties of the different major versions, the role version may only works with the version setted in the `neo4j_version` default parameter.
+
 ### Prerequisities
 
-Ansible 2.8.6 version installed.
+Ansible 2.8.8 version installed.
 Inventory destination should be a Debian environment.
 
 Java must be installed to run the service. Check [System requirements](https://neo4j.com/docs/operations-manual/current/installation/requirements/) to see supported versions. Java can be installed using the [Idealista's Java Ansible role](https://github.com/idealista/java-role).
@@ -38,7 +42,7 @@ Create or add to your roles dependency file (e.g requirements.yml) from GitHub:
 ```yml
 - src: http://github.com/idealista/neo4j_role.git
   scm: git
-  version: 1.0.0
+  version: 2.0.0
   name: neo4j
 ```
 
@@ -46,7 +50,7 @@ or using [Ansible Galaxy](https://galaxy.ansible.com/idealista/neo4j_role/) as o
 
 ```yml
 - src: idealista.neo4j_role
-  version: 1.0.0
+  version: 2.0.0
   name: neo4j
 ```
 

@@ -5,21 +5,17 @@ dependency:
 driver:
   name: docker
 
-lint:
-  name: yamllint
-  options:
-    config-file: .yamllint
-
 platforms:
   - name: neo4j-stretch
     hostname: neo4j
-    image: idealista/jdk:8u222-stretch-openjdk-headless
+    image: idealista/jdk:11.0.4-stretch-openjdk-headless
     privileged: false
     capabilities:
       - SYS_ADMIN
     volumes:
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
     tmpfs:
+      - '/tmp'
       - '/run'
       - '/run/lock'
     groups:

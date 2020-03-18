@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+### Changed
+
+- *[#14](https://github.com/idealista/neo4j_role/issues/14) Upgrade default version to 4.x.x* @jmonterrubio
+
 ## [1.1.1] - 2019-12-04
 
 ### Fixed
