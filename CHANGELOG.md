@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+### Added
+
+- *[#17](https://github.com/idealista/neo4j_role/issues/17) Extend neo4j parameters* @jmonterrubio
+
 ## [2.0.0] - 2020-03-18
 
 ### Changed

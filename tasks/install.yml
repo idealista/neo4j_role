@@ -55,6 +55,7 @@
   get_url:
     url: "{{ neo4j_sources_url }}"
     dest: "/tmp/{{ neo4j_package }}"
+    timeout: 30
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
   when: >
