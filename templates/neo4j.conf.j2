@@ -250,6 +250,14 @@ dbms.jvm.additional={{ param }}
 {% endfor %}
 
 #********************************************************************
+# Custom Parameters
+#********************************************************************
+
+{% for key, value in neo4j_custom_additional.items() %}
+{{ key }}={{ value }}
+{% endfor %}
+
+#********************************************************************
 # Wrapper Windows NT/2000/XP Service Properties
 #********************************************************************
 # WARNING - Do not modify any of these properties when an application
