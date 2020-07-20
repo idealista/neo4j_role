@@ -124,6 +124,10 @@ neo4j_jvm_additional:
 ## CACHE
 neo4j_memory_pagecache_size: 512m
 
+## ADDITIONAL CUSTOM
+neo4j_custom_additional:
+  dbms.tx_state.max_off_heap_memory: 512m
+
 ## NETWORK
 neo4j_address: 0.0.0.0
 neo4j_address_name: "{{ ansible_nodename }}"
