@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+## [2.1.0] - 2020-07-20
+
 ### Added
 
 - *[#17](https://github.com/idealista/neo4j_role/issues/17) Extend neo4j parameters* @jmonterrubio
@@ -45,6 +47,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 - *First release* @jmonterrubio
 
 [Unreleased]: https://github.com/idealista/neo4j_role/tree/develop
+[2.1.0]: https://github.com/idealista/neo4j_role/tree/2.1.0
 [2.0.0]: https://github.com/idealista/neo4j_role/tree/2.0.0
 [1.1.1]: https://github.com/idealista/neo4j_role/tree/1.1.1
 [1.1.0]: https://github.com/idealista/neo4j_role/tree/1.1.0
