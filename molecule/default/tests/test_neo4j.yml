@@ -11,35 +11,20 @@ user:
       - {{ neo4j_group }}
 
 file:
-  {{ neo4j_installation_path }}:
+  {{ neo4j_docker_logs_path }}:
     owner: {{ neo4j_user }}
     group: {{ neo4j_group }}
     exists: true
     filetype: directory
-  {{ neo4j_log_path }}:
+  {{ neo4j_docker_data_path }}:
     owner: {{ neo4j_user }}
     group: {{ neo4j_group }}
     exists: true
     filetype: directory
-  {{ neo4j_config_path }}:
+  {{ neo4j_docker_conf_path }}:
     owner: {{ neo4j_user }}
     group: {{ neo4j_group }}
     exists: true
     filetype: directory
-  {{ neo4j_config_path }}/neo4j.conf:
+  {{ neo4j_docker_conf_path }}/neo4j.conf:
     exists: true
-  /lib/systemd/system/neo4j.service:
-    exists: true
-
-port:
-  tcp:{{ neo4j_http_port }}:
-    listening: true
-  tcp:{{ neo4j_bolt_port }}:
-    listening: true
-  tcp:{{ neo4j_https_port }}:
-    listening: false
-
-service:
-  neo4j:
-    enabled: true
-    running: true

@@ -1,0 +1,40 @@
+---
+version: '{{ neo4j_docker_compose_version }}'
+services:
+  {{ neo4j_docker_service_name }}:
+    image: {{ neo4j_image }}:{{ neo4j_tag }}
+    container_name: {{ neo4j_docker_container_name }}
+{% if neo4j_docker_compose_networks is defined %}
+    networks:
+{% for network in neo4j_docker_compose_networks %}
+      - {{ network.name }}
+{% endfor %}
+{% endif %}
+{% if neo4j_docker_compose_ports is defined %}
+    ports:
+{% for port in neo4j_docker_compose_ports %}
+      - {{ port }}
+{% endfor %}
+{% endif %}
+{% if neo4j_docker_compose_env_vars is defined %}
+    environment:
+{% for env_var in neo4j_docker_compose_env_vars %}
+      - {{ env_var }}
+{% endfor %}
+{% endif %}
+{% if neo4j_docker_compose_volumes is defined %}
+    volumes:
+{% for volume in neo4j_docker_compose_volumes %}
+      - {{ volume }}
+{% endfor %}
+{% endif %}
+
+{% if neo4j_docker_compose_networks is defined %}
+networks:
+{% for network in neo4j_docker_compose_networks %}
+  {{ network.name }}:
+{% if network.external is defined %}
+    external: {{ network.external }}
+{% endif %}
+{% endfor %}
+{% endif %}

@@ -6,4 +6,7 @@ FROM {{ item.registry.url }}/{{ item.image }}
 FROM {{ item.image }}
 {% endif %}
 
-RUN if [ $(command -v apt-get) ]; then apt-get update && apt-get upgrade -y && apt-get install -y python sudo bash ca-certificates systemd systemd-sysv && apt-get clean; fi
+# install minimal packages for debian slim images
+RUN apt-get update && \
+    apt-get install -y python3 sudo bash ca-certificates iproute2 systemd systemd-sysv python3-pip && \
+    apt-get clean

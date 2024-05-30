@@ -7,6 +7,16 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+## [3.0.0] - 2024-05-31
+
+### Added
+
+- *Prepare for v5* @jmonterrubio
+
+### Changed
+
+- *Docker deploy* @jmonterrubio
+
 ## [2.1.0] - 2020-07-20
 
 ### Added
@@ -47,6 +57,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 - *First release* @jmonterrubio
 
 [Unreleased]: https://github.com/idealista/neo4j_role/tree/develop
+[3.0.0]: https://github.com/idealista/neo4j_role/tree/3.0.0
 [2.1.0]: https://github.com/idealista/neo4j_role/tree/2.1.0
 [2.0.0]: https://github.com/idealista/neo4j_role/tree/2.0.0
 [1.1.1]: https://github.com/idealista/neo4j_role/tree/1.1.1

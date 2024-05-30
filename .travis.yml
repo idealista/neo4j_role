@@ -1,18 +1,24 @@
 ---
+dist: xenial
 language: python
-python: "3.7"
+python: "3.9"
 os: linux
 services:
   - docker
 install:
-  - pip install pipenv
+  - pip install -I pipenv
   - pipenv sync
 env:
   jobs:
-    - MOLECULE_DISTRO=debian:stretch-slim
+    - MOLECULE_DISTRO=debian:bullseye-slim
 script:
-  - export MOLECULE_DISTRO=${MOLECULE_DISTRO}
-  - pipenv run molecule test
+  - pipenv run molecule test --all
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  email:
+    if: branch = main
+    on_success: change
+    on_failure: always
+    recipients:
+      - desarrollo.benders@idealista.com

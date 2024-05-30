@@ -1,0 +1,66 @@
+---
+
+- name: NEO4J | 🐋 Install using docker-compose.yml
+  when: not neo4j_install_using_definition
+  block:
+    - name: NEO4J | 🐋 Copy custom docker-compose.yml
+      ansible.builtin.copy:
+        src: "{{ neo4j_custom_docker_compose_file }}"
+        dest: "{{ neo4j_docker_compose_file }}"
+        owner: "{{ neo4j_user }}"
+        group: "{{ neo4j_group }}"
+        mode: 0774
+      when: neo4j_custom_docker_compose_file is defined
+
+    - name: NEO4J | 🐋 Generate docker-compose.yml from template
+      ansible.builtin.template:
+        src: "{{ neo4j_docker_compose_template }}"
+        dest: "{{ neo4j_docker_compose_file }}"
+        owner: "{{ neo4j_user }}"
+        group: "{{ neo4j_group }}"
+        mode: 0774
+      when:
+        - neo4j_custom_docker_compose_file is not defined
+
+    - name: NEO4J | 🐋 Compose Remove
+      community.docker.docker_compose:
+        project_name: "{{ neo4j_project_name }}"
+        project_src: "{{ neo4j_docker_files_path }}"
+        state: absent
+      when: neo4j_force_reinstall
+
+    - name: NEO4J | 🐋 Compose up
+      community.docker.docker_compose:
+        project_name: "{{ neo4j_project_name }}"
+        project_src: "{{ neo4j_docker_files_path }}"
+        pull: true
+        state: present
+      register: output
+
+    - name: NEO4J | 🐋 Assert NEO4J is running
+      ansible.builtin.assert:
+        that:
+          - "output.services['{{ neo4j_docker_service_name }}']['{{ neo4j_docker_container_name }}'].state.running"
+
+- name: NEO4J | 🐋 Install using docker definition vars
+  when: neo4j_install_using_definition
+  block:
+    - name: NEO4J | 🐋 Compose Remove
+      community.docker.docker_compose:
+        project_name: "{{ neo4j_project_name }}"
+        definition: "{{ neo4j_docker_definition }}"
+        state: absent
+      when: neo4j_force_reinstall
+
+    - name: NEO4J | 🐋 Compose up
+      community.docker.docker_compose:
+        project_name: "{{ neo4j_project_name }}"
+        definition: "{{ neo4j_docker_definition }}"
+        pull: true
+        state: present
+      register: output
+
+    - name: NEO4J | 🐋 Assert NEO4J is running
+      ansible.builtin.assert:
+        that:
+          - "output.services['{{ neo4j_docker_service_name }}']['{{ neo4j_docker_container_name }}'].state.running"

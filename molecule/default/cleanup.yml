@@ -1,0 +1,31 @@
+---
+
+- name: Destroy
+  hosts: neo4j_group
+  gather_facts: false
+  tasks:
+    - name: NEO4J | include default vars
+      ansible.builtin.include_vars:
+        dir: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/"
+        extensions:
+          - 'yml'
+
+    - name: NEO4J | Compose Remove (docker-compose.yml)
+      community.docker.docker_compose:
+        project_name: "{{ neo4j_project_name }}"
+        project_src: "{{ neo4j_docker_files_path }}"
+        state: absent
+      ignore_unreachable: true
+      when:
+        - not neo4j_install_using_definition
+      failed_when: false
+
+    - name: NEO4J | Compose Remove (definition)
+      community.docker.docker_compose:
+        project_name: "{{ neo4j_project_name }}"
+        definition: "{{ neo4j_docker_definition }}"
+        state: absent
+      ignore_unreachable: true
+      when:
+        - neo4j_install_using_definition
+      failed_when: false

@@ -1,36 +1,48 @@
 ---
 dependency:
   name: galaxy
-
 driver:
   name: docker
-
+lint: |
+  yamllint .
+  ansible-lint .
 platforms:
-  - name: neo4j-stretch
-    hostname: neo4j
-    image: idealista/jdk:11.0.6-stretch-openjdk-headless
+  - name: neo4j-debian-host
+    groups:
+      - neo4j_group
+    image: ${MOLECULE_DISTRO:-debian:bullseye-slim}
     privileged: false
     capabilities:
       - SYS_ADMIN
     volumes:
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/tmp/neo4j/data:/tmp/neo4j/data'
+      - '/tmp/neo4j/logs:/tmp/neo4j/logs'
+      - '/tmp/neo4j/conf:/tmp/neo4j/conf'
+      # - '${MOLECULE_SCENARIO_DIRECTORY}/test-config:/var/lib/neo4j/conf'
     tmpfs:
+      - '/tmp'
       - '/run'
       - '/run/lock'
-    groups:
-      - neo4j
     command: '/lib/systemd/systemd'
     stop_signal: 'RTMIN+3'
-
+    networks:
+      - name: neo4j
+    purge_networks: true
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
+  log: true
 
 scenario:
   name: default
+  # converge_sequence:
+    #- dependency
+    #- create
+    #- prepare
+    #- converge
+    #- check
+    #- destroy
 
 verifier:
-  name: goss
-  lint:
-    name: yamllint
+  name: ansible

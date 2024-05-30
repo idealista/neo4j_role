@@ -1,5 +1,4 @@
 ---
-
 extends: default
 
 rules:
@@ -10,7 +9,10 @@ rules:
     max-spaces-inside: 1
     level: error
   line-length: disable
-
+  truthy: disable
 ignore: |
-    .molecule/
-    molecule/
+  .molecule/
+  *vault*
+  test_*yml
+  roles/
+  .ansible-lint
