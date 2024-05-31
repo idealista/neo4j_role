@@ -46,10 +46,10 @@ dbms.usage_report.enabled={{ neo4j_usage_report_enabled}}
 # on available system resources. Uncomment these lines to set specific initial
 # and maximum heap size.
 {%- if neo4j_memory.heap_initial_size is defined +%}
-server.memory.heap.initial_size={{ heap_initial_size }}
+server.memory.heap.initial_size={{ neo4j_memory.heap_initial_size }}
 {%- endif +%}
 {%- if neo4j_memory.heap_max_size is defined +%}
-server.memory.heap.max_size={{ heap_max_size }}
+server.memory.heap.max_size={{ neo4j_memory.heap_max_size }}
 {%- endif +%}
 
 {%- if neo4j_memory.pagecache_size is defined +%}
