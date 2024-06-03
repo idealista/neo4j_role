@@ -1,0 +1,55 @@
+---
+
+- name: NEO4J | 🗒️ Ensure docker 🐋 is installed
+  ansible.builtin.command:
+    cmd: docker --version
+  changed_when: false
+  when: neo4j_docker_check
+
+- name: NEO4J | 🗒️ Ensure docker compose 🐋 is installed
+  ansible.builtin.command:
+    cmd: docker compose version
+  changed_when: false
+  when: neo4j_docker_check
+
+- name: NEO4J | 🗒️ Ensure required packages 📦 are installed
+  ansible.builtin.package:
+    name: "{{ neo4j_required_packages }}"
+    state: present
+
+- name: NEO4J | 🗒️ Ensure python packages 🐍📦 are installed
+  ansible.builtin.pip:
+    name: "{{ neo4j_required_python_packages }}"
+    state: present
+
+- name: NEO4J | 🗒️ Ensure NEO4J group 👪
+  ansible.builtin.group:
+    name: "{{ neo4j_group }}"
+    system: yes
+    state: present
+  tags:
+    - neo4j_install
+
+- name: NEO4J | 🗒️ Ensure NEO4J user 💃
+  ansible.builtin.user:
+    name: "{{ neo4j_user }}"
+    group: "{{ neo4j_group }}"
+    uid: "{{ neo4j_user_id }}"
+    system: yes
+    shell: "{{ neo4j_user_shell }}"
+    createhome: no
+  tags:
+    - neo4j_install
+
+- name: NEO4J | 🗒️ Ensure skeleton 💀 paths
+  ansible.builtin.file:
+    dest: "{{ item.path }}"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_group }}"
+    mode: "{{ item.mode }}"
+    state: directory
+  with_items:
+    - "{{ neo4j_skeleton_paths }}"
+  when: neo4j_skeleton_paths is defined
+  tags:
+    - neo4j_install

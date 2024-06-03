@@ -42,7 +42,7 @@ Create or add to your roles dependency file (e.g requirements.yml) from GitHub:
 ```yml
 - src: http://github.com/idealista/neo4j_role.git
   scm: git
-  version: 2.0.0
+  version: 3.0.0
   name: neo4j
 ```
 
@@ -50,7 +50,7 @@ or using [Ansible Galaxy](https://galaxy.ansible.com/idealista/neo4j_role/) as o
 
 ```yml
 - src: idealista.neo4j_role
-  version: 2.0.0
+  version: 3.0.0
   name: neo4j
 ```
 
@@ -73,20 +73,27 @@ Use in a playbook:
 
 Look to the [defaults](defaults/main.yml) properties file to see the possible configuration properties.
 
-Check in the maven section how can you set up a oracle maven repository.
-
-You can edit neo4j config and dashboards via template or webui.
-
 ## Testing
 
+### Install dependencies
+
 ```sh
-pipenv install -r test-requirements.txt
-pipenv run molecule test
+$ pipenv sync
+```
+
+For more information read the [pipenv docs](ipenv-fork.readthedocs.io/en/latest/).
+
+### Testing
+
+```sh
+$ pipenv run molecule test 
 ```
 
 ## Built With
 
-![Ansible](https://img.shields.io/badge/ansible-2.8.6-green.svg)
+![Ansible](https://img.shields.io/badge/ansible-8.4.0-green.svg)
+![Molecule](https://img.shields.io/badge/molecule-6.0.2-green.svg)
+![Goss](https://img.shields.io/badge/goss-0.3.16-green.svg)
 
 ## Versioning
 

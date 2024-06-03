@@ -1,34 +1,82 @@
 ---
 
-- name: neo4j | Copy configuration
-  template:
-    src: neo4j.conf.j2
-    dest: "{{ neo4j_config_path }}/neo4j.conf"
+- name: NEO4J | 🐋 Copy custom NEO4J config 🧰 file
+  ansible.builtin.copy:
+    src: "{{ neo4j_custom_config_file }}"
+    dest: "{{ neo4j_config_file }}"
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
-  notify: restart neo4j
+    mode: 0774
+  when: neo4j_custom_config_file is defined
+  notify: NEO4J | Restart containers
 
-- name: neo4j | Flush handlers to restart Neo4j after configuration
-  meta: flush_handlers
-
-- name: neo4j | Set initial admin password
-  command: "bin/neo4j-admin set-initial-password {{ neo4j_admin_password }}"
-  args:
-    chdir: "{{ neo4j_installation_path }}"
-  become: true
-  become_user: "{{ neo4j_user }}"
-  when: neo4j_force_reinstall or neo4j_check is failed
-  no_log: true
-  notify: restart neo4j
-
-- name: neo4j | Move auth file
-  copy:
-    src: "{{ neo4j_installation_path }}/data/dbms/auth.ini"
-    dest: "{{ neo4j_data_path }}/dbms/auth.ini"
-    remote_src: true
+- name: NEO4J | 🐋 Generate NEO4J config 🧰 from template
+  ansible.builtin.template:
+    src: "{{ neo4j_config_template }}"
+    dest: "{{ neo4j_config_file }}"
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_group }}"
-  when:
-    - neo4j_force_reinstall or neo4j_check is failed
-    - "'{{ neo4j_installation_path }}/data' != '{{ neo4j_data_path }}'"
-  notify: restart neo4j
+    mode: 0774
+  when: neo4j_custom_config_file is not defined
+  notify: NEO4J | Restart containers
+
+- name: NEO4J | 🐋 Copy custom NEO4J admin config 🧰 file
+  ansible.builtin.copy:
+    src: "{{ neo4j_custom_admin_config_file }}"
+    dest: "{{ neo4j_docker_conf_path }}/neo4j-admin.conf"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_group }}"
+    mode: 0774
+  when: neo4j_custom_admin_config_file is defined
+  notify: NEO4J | Restart containers
+
+- name: NEO4J | 🐋 Copy default NEO4J admin config 🧰 file
+  ansible.builtin.copy:
+    src: neo4j-admin.conf
+    dest: "{{ neo4j_docker_conf_path }}/neo4j-admin.conf"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_group }}"
+    mode: 0774
+  when: neo4j_custom_admin_config_file is not defined
+  notify: NEO4J | Restart containers
+
+- name: NEO4J | 🐋 Copy custom NEO4J server logs config 🧰 file
+  ansible.builtin.copy:
+    src: "{{ neo4j_custom_server_logs_config_file }}"
+    dest: "{{ neo4j_docker_conf_path }}/server-logs.xml"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_group }}"
+    mode: 0774
+  when: neo4j_custom_server_logs_config_file is defined
+  notify: NEO4J | Restart containers
+
+- name: NEO4J | 🐋 Copy default NEO4J server logs config 🧰 file
+  ansible.builtin.copy:
+    src: server-logs.xml
+    dest: "{{ neo4j_docker_conf_path }}/server-logs.xml"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_group }}"
+    mode: 0774
+  when: neo4j_custom_server_logs_config_file is not defined
+  notify: NEO4J | Restart containers
+
+- name: NEO4J | 🐋 Copy custom NEO4J user logs config 🧰 file
+  ansible.builtin.copy:
+    src: "{{ neo4j_custom_user_logs_config_file }}"
+    dest: "{{ neo4j_docker_conf_path }}/user-logs.xml"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_group }}"
+    mode: 0774
+  when: neo4j_custom_user_logs_config_file is defined
+  notify: NEO4J | Restart containers
+
+- name: NEO4J | 🐋 Copy default NEO4J user logs config 🧰 file
+  ansible.builtin.copy:
+    src: user-logs.xml
+    dest: "{{ neo4j_docker_conf_path }}/user-logs.xml"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_group }}"
+    mode: 0774
+  when: neo4j_custom_user_logs_config_file is not defined
+  notify: NEO4J | Restart containers
+

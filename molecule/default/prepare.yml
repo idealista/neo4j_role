@@ -1,0 +1,9 @@
+---
+
+- name: Prepare
+  hosts: neo4j_group
+  gather_facts: true
+  roles:
+    - role: docker
+      tags: docker
+      when: neo4j_docker_check

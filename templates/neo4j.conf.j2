@@ -5,80 +5,144 @@
 # https://neo4j.com/docs/operations-manual/current/reference/configuration-settings/
 #*****************************************************************
 
+{%- if neo4j_default_database is defined +%}
 # The name of the default database
-dbms.default_database={{ neo4j_default_database }}
+initial.dbms.default_database={{ neo4j_default_database }}
+{%- endif +%}
 
 # Paths of directories in the installation.
-dbms.directories.data={{ neo4j_data_path }}
-dbms.directories.plugins={{ neo4j_plugins_path }}
-dbms.directories.logs={{ neo4j_log_path }}
-dbms.directories.lib={{ neo4j_lib_path }}
-dbms.directories.run=/var/run/neo4j
+{%- if neo4j_server_directories is defined +%}
+  {%- for key, value in neo4j_server_directories.items() +%}
+server.directories.{{ key }}={{ value }}
+  {%- endfor +%}
+{%- endif +%}
 
-# This setting constrains all `LOAD CSV` import files to be under the `import` directory. Remove or comment it out to
-# allow files to be loaded from anywhere in the filesystem; this introduces possible security problems. See the
-# `LOAD CSV` section of the manual for details.
-dbms.directories.import={{ neo4j_import_path }}
-
+{%- if neo4j_auth_enabled is defined +%}
 # Whether requests to Neo4j are authenticated.
 # To disable authentication, uncomment this line
 dbms.security.auth_enabled={{ neo4j_auth_enabled }}
+{%- endif +%}
 
-# Enable this to be able to upgrade a store from an older version.
-#dbms.allow_upgrade=true
+{%- if neo4j_usage_report_enabled is defined +%}
+# Anonymous usage data reporting
+# To disable, uncomment this line
+dbms.usage_report.enabled={{ neo4j_usage_report_enabled}}
+{%- endif +%}
 
-# Java Heap Size: by default the Java heap size is dynamically
-# calculated based on available system resources.
-# Uncomment these lines to set specific initial and maximum
-# heap size.
-dbms.memory.heap.initial_size={{ neo4j_java_xms }}
-dbms.memory.heap.max_size={{ neo4j_java_xmx }}
 
-# The amount of memory to use for mapping the store files, in bytes (or
-# kilobytes with the 'k' suffix, megabytes with 'm' and gigabytes with 'g').
+#********************************************************************
+# Memory Settings
+#********************************************************************
+#
+# Memory settings are specified kibibytes with the 'k' suffix, mebibytes with
+# 'm' and gibibytes with 'g'.
 # If Neo4j is running on a dedicated server, then it is generally recommended
 # to leave about 2-4 gigabytes for the operating system, give the JVM enough
 # heap to hold all your transaction state and query context, and then leave the
 # rest for the page cache.
+
+{%- if neo4j_memory is defined +%}
+# Java Heap Size: by default the Java heap size is dynamically calculated based
+# on available system resources. Uncomment these lines to set specific initial
+# and maximum heap size.
+{%- if neo4j_memory.heap_initial_size is defined +%}
+server.memory.heap.initial_size={{ neo4j_memory.heap_initial_size }}
+{%- endif +%}
+{%- if neo4j_memory.heap_max_size is defined +%}
+server.memory.heap.max_size={{ neo4j_memory.heap_max_size }}
+{%- endif +%}
+
+{%- if neo4j_memory.pagecache_size is defined +%}
+# The amount of memory to use for mapping the store files.
 # The default page cache memory assumes the machine is dedicated to running
-# Neo4j, and is heuristically set to 50% of RAM minus the max Java heap size.
-dbms.memory.pagecache.size={{ neo4j_memory_pagecache_size }}
+# Neo4j, and is heuristically set to 50% of RAM minus the Java heap size.
+server.memory.pagecache.size={{ neo4j_memory.pagecache_size }}
+{%- endif +%}
+
+{%- if neo4j_memory.transaction_total_max is defined +%}
+# Limit the amount of memory that all of the running transaction can consume.
+# The default value is 70% of the heap size limit.
+dbms.memory.transaction.total.max={{ neo4j_memory.transaction_total_max }}
+{%- endif +%}
+
+{%- if neo4j_memory.transaction_max is defined +%}
+# Limit the amount of memory that a single transaction can consume.
+# By default there is no limit.
+db.memory.transaction.max={{ neo4j_memory.transaction_max }}
+{%- endif +%}
+{%- endif +%}
 
 #*****************************************************************
 # Network connector configuration
 #*****************************************************************
 
+{%- if neo4j_network is defined +%}
+{%- if neo4j_network.default_listen_address is defined +%}
 # With default configuration Neo4j only accepts local connections.
 # To accept non-local connections, uncomment this line:
-dbms.default_listen_address={{ neo4j_address }}
+server.default_listen_address={{ neo4j_network.default_listen_address }}
+{%- endif +%}
 
+{%- if neo4j_network.default_advertised_address is defined +%}
 # You can also choose a specific network interface, and configure a non-default
 # port for each connector, by setting their individual listen_address.
 
 # The address at which this server can be reached by its clients. This may be the server's IP address or DNS name, or
 # it may be the address of a reverse proxy which sits in front of the server. This setting may be overridden for
 # individual connectors below.
-dbms.default_advertised_address={{ neo4j_address_name }}
+server.default_advertised_address={{ neo4j_network.default_advertised_address }}
+{%- endif +%}
 
 # You can also choose a specific advertised hostname or IP address, and
 # configure an advertised port for each connector, by setting their
 # individual advertised_address.
 
+# By default, encryption is turned off.
+# To turn on encryption, an ssl policy for the connector needs to be configured
+# Read more in SSL policy section in this file for how to define a SSL policy.
+
 # Bolt connector
-dbms.connector.bolt.enabled={{ neo4j_bolt_enabled }}
-#dbms.connector.bolt.tls_level=DISABLED
-dbms.connector.bolt.advertised_address=:{{ neo4j_bolt_port }}
+{%- if neo4j_network.bolt_enabled is defined +%}
+server.bolt.enabled={{ neo4j_network.bolt_enabled }}
+{%- endif +%}
+{%- if neo4j_network.bolt_tls_level is defined +%}
+server.bolt.tls_level={{ neo4j_network.bolt_tls_level }}
+{%- endif +%}
+{%- if neo4j_network.bolt_listen_address is defined +%}
+server.bolt.listen_address=:{{ neo4j_network.bolt_listen_address }}
+{%- endif +%}
+{%- if neo4j_network.bolt_advertised_address is defined +%}
+server.bolt.advertised_address=:{{ neo4j_network.bolt_advertised_address }}
+{%- endif +%}
 
 # HTTP Connector. There can be zero or one HTTP connectors.
-dbms.connector.http.enabled={{ neo4j_http_enabled }}
-dbms.connector.http.advertised_address=:{{ neo4j_http_port }}
+{%- if neo4j_network.http_enabled is defined +%}
+server.http.enabled={{ neo4j_network.http_enabled }}
+{%- endif +%}
+{%- if neo4j_network.http_listen_address is defined +%}
+server.http.listen_address=:{{ neo4j_network.http_listen_address }}
+{%- endif +%}
+{%- if neo4j_network.http_advertised_address is defined +%}
+server.http.advertised_address=:{{ neo4j_network.http_advertised_address }}
+{%- endif +%}
 
 # HTTPS Connector. There can be zero or one HTTPS connectors.
-dbms.connector.https.enabled={{ neo4j_https_enabled }}
-dbms.connector.https.advertised_address=:{{ neo4j_https_port }}
+{%- if neo4j_network.https_enabled is defined +%}
+server.https.enabled={{ neo4j_network.https_enabled }}
+{%- endif +%}
+{%- if neo4j_network.https_listen_address is defined +%}
+server.https.listen_address=:{{ neo4j_network.https_listen_address }}
+{%- endif +%}
+{%- if neo4j_network.https_advertised_address is defined +%}
+server.https.advertised_address=:{{ neo4j_network.https_advertised_address }}
+{%- endif +%}
 
+{%- if neo4j_network.threads_worker_count is defined +%}
 # Number of Neo4j worker threads.
-dbms.threads.worker_count={{ neo4j_threads_worker }}
+server.threads.worker_count={{ neo4j_network.threads_worker_count }}
+{%- endif +%}
+{%- endif +%}
+
 
 #*****************************************************************
 # SSL policy configuration
@@ -158,48 +222,39 @@ dbms.threads.worker_count={{ neo4j_threads_worker }}
 # Logging configuration
 #*****************************************************************
 
+{%- if neo4j_logging is defined +%}
+{%- if neo4j_logging.http_enabled is defined +%}
 # To enable HTTP logging, uncomment this line
-dbms.logs.http.enabled={{ neo4j_log_http_enabled }}
+dbms.logs.http.enabled={{ neo4j_logging.http_enabled }}
+{%- endif +%}
 
-# Number of HTTP logs to keep.
-dbms.logs.http.rotation.keep_number={{ neo4j_log_http_rotation_keep_number }}
-
-# Size of each HTTP log that is kept.
-dbms.logs.http.rotation.size={{ neo4j_log_http_rotation_size }}
-
+{%- if neo4j_logging.gc_enabled is defined +%}
 # To enable GC Logging, uncomment this line
-dbms.logs.gc.enabled={{ neo4j_log_gc_enabled }}
+server.logs.gc.enabled={{ neo4j_logging.gc_enabled }}
+{%- endif +%}
 
+{%- if neo4j_logging.gc_options is defined +%}
 # GC Logging Options
 # see https://docs.oracle.com/en/java/javase/11/tools/java.html#GUID-BE93ABDC-999C-4CB5-A88B-1994AAAC74D5
-dbms.logs.gc.options={{ neo4j_log_gc_options }}
+server.logs.gc.options={{ neo4j_logging.gc_options }}
+{%- endif +%}
 
-# For Java 9 and newer GC Logging Options
-# see https://docs.oracle.com/javase/10/tools/java.htm#JSWOR-GUID-BE93ABDC-999C-4CB5-A88B-1994AAAC74D5
-
+{%- if neo4j_logging.gc_rotation_keep_number is defined +%}
 # Number of GC logs to keep.
-dbms.logs.gc.rotation.keep_number={{ neo4j_log_gc_rotation_keep_number }}
+server.logs.gc.rotation.keep_number={{ neo4j_logging.gc_rotation_keep_number }}
+{%- endif +%}
 
+{%- if neo4j_logging.query_enabled is defined +%}
 # Size of each GC log that is kept.
-dbms.logs.gc.rotation.size={{ neo4j_log_gc_rotation_size }}
-
-# Log level for the debug log. One of DEBUG, INFO, WARN and ERROR. Be aware that logging at DEBUG level can be very verbose.
-dbms.logs.debug.level={{ neo4j_log_debug_level }}
-
-# Size threshold for rotation of the debug log. If set to zero then no rotation will occur. Accepts a binary suffix "k",
-# "m" or "g".
-dbms.logs.debug.rotation.size={{ neo4j_log_debug_rotation_size }}
-
-# Maximum number of history files for the internal log.
-dbms.logs.debug.rotation.keep_number={{ neo4j_log_debug_rotation_keep_number }}
+server.logs.gc.rotation.size={{ neo4j_logging.gc_rotation_size }}
+{%- endif +%}
+{%- endif +%}
 
 #*****************************************************************
 # Miscellaneous configuration
 #*****************************************************************
 
-# Enable this to specify a parser other than the default one.
-#cypher.default_language_version=3.5
-
+{%- if neo4j_miscellaneous is defined +%}
 # Determines if Cypher will allow using file URLs when loading data using
 # `LOAD CSV`. Setting this value to `false` will cause Neo4j to fail `LOAD CSV`
 # clauses that load data from the file system.
@@ -219,11 +274,14 @@ dbms.logs.debug.rotation.keep_number={{ neo4j_log_debug_rotation_keep_number }}
 #dbms.security.http_strict_transport_security=
 
 # Retention policy for transaction logs needed to perform recovery and backups.
-dbms.tx_log.rotation.retention_policy=1 days
+{%- if neo4j_miscellaneous.tx_log_rotation_retention_policy is defined +%}
+db.tx_log.rotation.retention_policy={{ neo4j_miscellaneous.tx_log_rotation_retention_policy }}
+{%- endif +%}
 
-# Only allow read operations from this Neo4j instance. This mode still requires
-# write access to the directory for lock purposes.
-#dbms.read_only=false
+# Whether or not any database on this instance are read_only by default.
+# If false, individual databases may be marked as read_only using dbms.database.read_only.
+# If true, individual databases may be marked as writable using dbms.databases.writable.
+#dbms.databases.default_to_read_only=false
 
 # Comma separated list of JAX-RS packages containing JAX-RS resources, one
 # package name for each mountpoint. The listed package names will be loaded
@@ -231,7 +289,7 @@ dbms.tx_log.rotation.retention_policy=1 days
 # org.neo4j.examples.server.unmanaged.HelloWorldResource.java from
 # neo4j-server-examples under /examples/unmanaged, resulting in a final URL of
 # http://localhost:7474/examples/unmanaged/helloworld/{nodeId}
-#dbms.unmanaged_extension_classes=org.neo4j.examples.server.unmanaged=/examples/unmanaged
+#server.unmanaged_extension_classes=org.neo4j.examples.server.unmanaged=/examples/unmanaged
 
 # A comma separated list of procedures and user defined functions that are allowed
 # full access to the database through unsupported/insecure internal APIs.
@@ -239,23 +297,30 @@ dbms.tx_log.rotation.retention_policy=1 days
 
 # A comma separated list of procedures to be loaded by default.
 # Leaving this unconfigured will load all procedures found.
-#dbms.security.procedures.whitelist=apoc.coll.*,apoc.load.*
+#dbms.security.procedures.allowlist=apoc.coll.*,apoc.load.*,gds.*
+{%- endif +%}
 
 #********************************************************************
 # JVM Parameters
 #********************************************************************
 
-{% for param in neo4j_jvm_additional %}
-dbms.jvm.additional={{ param }}
+{%- if neo4j_jvm is defined %}
+{%- if neo4j_jvm.jvm_additional is defined +%}
+{% for param in neo4j_jvm.jvm_additional %}
+server.jvm.additional={{ param }}
 {% endfor %}
+{%- endif +%}
+{%- endif +%}
 
 #********************************************************************
 # Custom Parameters
 #********************************************************************
 
-{% for key, value in neo4j_custom_additional.items() %}
+{%- if neo4j_custom is defined %}
+{% for key, value in neo4j_custom.items() %}
 {{ key }}={{ value }}
 {% endfor %}
+{%- endif +%}
 
 #********************************************************************
 # Wrapper Windows NT/2000/XP Service Properties
@@ -266,13 +331,10 @@ dbms.jvm.additional={{ param }}
 #  service can then be reinstalled.
 
 # Name of the service
-dbms.windows_service_name=neo4j
+server.windows_service_name=neo4j
 
 #********************************************************************
-# Plugins Properties
+# Down here this configuration is setted by Neo4j once copied from 
+# the mounted volume
 #********************************************************************
-{% if neo4j_plugins_configuration is defined %}
-{% for param in neo4j_plugins_configuration %}
-{{ param.name }}={{ param.value }}
-{% endfor %}
-{% endif %}
+

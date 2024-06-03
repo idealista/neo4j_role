@@ -1,22 +1,17 @@
 ---
 
-- name: neo4j | Install
-  import_tasks: install.yml
+- name: NEO4J | Prepare
+  ansible.builtin.import_tasks: prepare.yml
   tags:
-    - install_neo4j
+    - neo4j_prepare
 
-- name: neo4j | Configure Service
-  import_tasks: config.yml
+- name: NEO4J | Docker
+  ansible.builtin.import_tasks: docker.yml
   tags:
-    - configure_neo4j
+    - neo4j_docker
 
-- name: neo4j | Install plugins
-  import_tasks: plugins.yml
-  when: neo4j_plugins is defined
+- name: NEO4J | Configure
+  ansible.builtin.import_tasks: config.yml
+  when: neo4j_override_default_config
   tags:
-    - plugins_neo4j
-
-- name: neo4j | Service
-  import_tasks: service.yml
-  tags:
-    - service_neo4j
+    - neo4j_configure
