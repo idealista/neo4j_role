@@ -1,168 +1,205 @@
 ---
-# General
 
-neo4j_version: 4.0.1
+## General
+app_name: neo4j
 
-## Owner
+# Version
+neo4j_image: neo4j
+neo4j_version: 5.20.0
+neo4j_tag: "{{ neo4j_version }}-{{ neo4j_edition }}"
+neo4j_edition: community
+
+# The port exposed by the service goes here
+neo4j_http_port: 7474
+neo4j_bolt_port: 7687
+
+# Set false if you don't care about if docker is installed
+neo4j_docker_check: true
+
+# Set true to force the download and installation
+neo4j_force_reinstall: false
+
+# Paths
+neo4j_skeleton_paths:
+  - path: "{{ neo4j_docker_files_path }}"
+    mode: "0755"
+  - path: "{{ neo4j_docker_data_path }}"
+    mode: "0755"
+  - path: "{{ neo4j_docker_logs_path }}"
+    mode: "0755"
+  - path: "{{ neo4j_docker_conf_path }}"
+    mode: "0744"
+  - path: "{{ neo4j_docker_plugins_path }}"
+    mode: "0744"
+  - path: "{{ neo4j_docker_licenses_path }}"
+    mode: "0744"
+  - path: "{{ neo4j_docker_import_path }}"
+    mode: "0744"
+  - path: "{{ neo4j_docker_lib_path }}"
+    mode: "0744"
+
+# Owner
 neo4j_user: neo4j
 neo4j_group: neo4j
+neo4j_user_id: 7474
+neo4j_user_shell: /usr/sbin/nologin
+neo4j_docker_user: neo4j
 
-## Service options
-neo4j_service_enabled: true  # start on boot
-neo4j_service_state: started  # current state: started, stopped
-neo4j_service_timeout: 120
-neo4j_max_filedescriptors: 60000
+neo4j_required_packages:
+  - python3-dev
+  - python3-pip
+  - libsasl2-dev
+  - libssl-dev
 
-## Files & Paths
-neo4j_default_database: neo4j
-neo4j_installation_path: /var/lib/neo4j
-neo4j_log_path: /var/log/neo4j
-neo4j_config_path: /etc/neo4j
+neo4j_required_python_packages:
+  - docker==6.1.3
+  - docker-compose==1.29.2
+  - requests==2.31.0
 
-neo4j_data_path: "{{ neo4j_installation_path }}/data"
-neo4j_plugins_path: "{{ neo4j_installation_path }}/plugins"
-neo4j_certificates_path: "{{ neo4j_installation_path }}/certificates"
-neo4j_lib_path: "{{ neo4j_installation_path }}/lib"
-neo4j_import_path: "{{ neo4j_installation_path }}/import"
+neo4j_project_name: "{{ app_name }}"
+neo4j_docker_container_name: "{{ neo4j_project_name }}"
+neo4j_docker_service_name: "{{ neo4j_project_name }}"
 
-# CONF
+# Using compose file
+# Ansible docker compose file template
+neo4j_docker_files_path: "/usr/local/src/{{ neo4j_project_name }}"
+neo4j_docker_data_path: /var/lib/neo4j/data
+neo4j_docker_logs_path: /var/log/neo4j
+neo4j_docker_conf_path: /var/lib/neo4j/conf
+neo4j_docker_plugins_path: /var/lib/neo4j/plugins
+neo4j_docker_licenses_path: /var/lib/neo4j/licenses
+neo4j_docker_import_path: /var/lib/neo4j/import
+neo4j_docker_lib_path: /usr/share/neo4j/lib
 
-## SECURITY
-neo4j_auth_enabled: "true"
-neo4j_admin_password: admin  # Change this password asap
+neo4j_docker_compose_template: docker-compose.yml.j2
+neo4j_docker_compose_file: "{{ neo4j_docker_files_path }}/docker-compose.yml"
 
-## JVM
-neo4j_java_xms: 512m
-neo4j_java_xmx: 512m
+# Using definitions
+neo4j_install_using_definition: false
+neo4j_docker_definition:
+  version: '2.4'
+  services:
+    neo4j:
+      image: "{{ neo4j_image }}:{{ neo4j_tag }}"
+      networks:
+        - neo4j
+      container_name: "{{ neo4j_docker_container_name }}"
+      ports: 
+        - "{{ neo4j_http_port }}:{{ neo4j_http_port }}"
+        - "{{ neo4j_bolt_port }}:{{ neo4j_bolt_port }}"
+      environment:
+        - NEO4J_AUTH={{ neo4j_login_user.name }}/{{ neo4j_login_user.password }}
+      volumes:
+          - "{{ neo4j_docker_conf_path }}:/conf"
+          - "{{ neo4j_docker_data_path }}:/data"
+          - "{{ neo4j_docker_logs_path }}:/logs"
+  networks:
+    neo4j:
+      name: "{{ neo4j_project_name }}"
 
-# G1GC generally strikes a good balance between throughput and tail
-# latency, without too much tuning.
-# -XX:+UseG1GC
+# neo4j config file
+neo4j_override_default_config: false
+neo4j_config_template: neo4j.conf.j2
+neo4j_config_file: "{{ neo4j_docker_conf_path }}/neo4j.conf"
+# neo4j_custom_config_file: "{{ playbook_dir }}/files/neo4j.conf"
+# neo4j_admin_custom_config_file: "{{ playbook_dir }}/files/admin-neo4j.conf"
+# neo4j_custom_server_logs_config_file: "{{ playbook_dir }}/files/server-logs.xml"
+# neo4j_custom_user_logs_config_file: "{{ playbook_dir }}/files/user-logs.xml"
 
-# Have common exceptions keep producing stack traces, so they can be
-# debugged regardless of how often logs are rotated.
-# -XX:-OmitStackTraceInFastThrow
+neo4j_docker_compose_version: "2.4"
+neo4j_docker_compose_networks:
+  - name: "{{ neo4j_project_name }}"
+    external: true
+neo4j_docker_compose_ports:
+  - "{{ neo4j_http_port }}:{{ neo4j_http_port }}"
+  - "{{ neo4j_bolt_port }}:{{ neo4j_bolt_port }}"
+neo4j_docker_compose_env_vars:
+  - NEO4J_AUTH={{ neo4j_login_user.name }}/{{ neo4j_login_user.password }}
+neo4j_docker_compose_volumes:
+  - "{{ neo4j_docker_conf_path }}:/var/lib/neo4j/conf"
+  - "{{ neo4j_docker_data_path }}:/data"
+  - "{{ neo4j_docker_logs_path }}:/logs"
 
-# Make sure that `initmemory` is not only allocated, but committed to
-# the process, before starting the database. This reduces memory
-# fragmentation, increasing the effectiveness of transparent huge
-# pages. It also reduces the possibility of seeing performance drop
-# due to heap-growing GC events, where a decrease in available page
-# cache leads to an increase in mean IO response time.
-# Try reducing the heap memory, if this flag degrades performance.
-# -XX:+AlwaysPreTouch
+# Custom docker-compose.yml
+# neo4j_custom_docker_compose_file: "{{ playbook_dir }}/files/docker/docker-compose.yml"
 
-# Trust that non-static final fields are really final.
-# This allows more optimizations and improves overall performance.
-# NOTE: Disable this if you use embedded mode, or have extensions or dependencies that may use reflection or
-# serialization to change the value of final fields!
-# -XX:+UnlockExperimentalVMOptions
-# -XX:+TrustFinalNonStaticFields
+# Custom neo4j config vars
+neo4j_configuration:
+neo4j_server_directories:
+  data: /data
+#   plugins: plugins
+  logs: /logs
+#   lib: lib
+#   run: run
+#   licenses: licenses
+#   import: import
 
-# Disable explicit garbage collection, which is occasionally invoked by the JDK itself.
-# -XX:+DisableExplicitGC
+# neo4j_auth_enabled: false
 
-# Restrict size of cached JDK buffers to 256 KB
-# -Djdk.nio.maxCachedBufferSize=262144
+# neo4j_usage_report_enabled: false
 
-# More efficient buffer allocation in Netty by allowing direct no cleaner buffers.
-# -Dio.netty.tryReflectionSetAccessible=true
+neo4j_memory:
+#   heap_initial_size: 512m
+#   heap_max_size: 512m
+  pagecache_size: 512m
+#   transaction_total_max: 256m
+#   transaction_max: 16m
 
-# Exits JVM on the first occurrence of an out-of-memory error. Its preferrable to restart
-# VM in case of out of memory errors.
-# -XX:+ExitOnOutOfMemoryError
+neo4j_network:
+  default_listen_address: 0.0.0.0
+  # default_advertised_address: localhost
+  bolt_enabled: "true"
+  # bolt_tls_level: DISABLED
+  bolt_listen_address: "{{ neo4j_bolt_port }}"
+  # bolt_advertised_address: "{{ neo4j_bolt_port }}"
+  http_enabled: "true"
+  http_listen_address: "{{ neo4j_http_port }}"
+  # http_advertised_address: "{{ neo4j_http_port }}"
+  https_enabled: "false"
+  # https_listen_address: 7473
+  # https_advertised_address: 7473
+  # threads_worker_count: 
 
-# Remote JMX monitoring
-# -Dcom.sun.management.jmxremote.port=3637
-# -Dcom.sun.management.jmxremote.authenticate=true
-# -Dcom.sun.management.jmxremote.ssl=false
-# -Dcom.sun.management.jmxremote.password.file=/absolute/path/to/conf/jmx.password
-# -Dcom.sun.management.jmxremote.access.file=/absolute/path/to/conf/jmx.access
+# neo4j_logging:
+#   http_enabled: "true"
+#   gc_enabled: "true"
+#   gc_options: -Xlog:gc*,safepoint,age*=trace
+#   gc_rotation_keep_number: 5
+#   gc_rotation_size: 20m
 
-# Some systems cannot discover host name automatically, and need this line configured:
-# -Djava.rmi.server.hostname=$THE_NEO4J_SERVER_HOSTNAME
+neo4j_miscellaneous:
+  tx_log_rotation_retention_policy: 2 days 2G
 
-# Expand Diffie Hellman (DH) key size from default 1024 to 2048 for DH-RSA cipher suites used in server TLS handshakes.
-# This is to protect the server from any potential passive eavesdropping.
-# -Djdk.tls.ephemeralDHKeySize=2048
+neo4j_jvm:
+  jvm_additional:
+    - -XX:+UseG1GC
+    - -XX:-OmitStackTraceInFastThrow
+    - -XX:+AlwaysPreTouch
+    - -XX:+UnlockExperimentalVMOptions
+    - -XX:+TrustFinalNonStaticFields
+    - -XX:+DisableExplicitGC
+    - -Djdk.nio.maxCachedBufferSize=1024
+    - -Dio.netty.tryReflectionSetAccessible=true
+    # - -XX:+ExitOnOutOfMemoryError
+    - -Djdk.tls.ephemeralDHKeySize=2048
+    - -Djdk.tls.rejectClientInitiatedRenegotiation=true
+    # - agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    # - -Djdk.serialFilter=java.**;org.neo4j.**;com.neo4j.**;com.hazelcast.**;net.sf.ehcache.Element;com.sun.proxy.*;org.openjdk.jmh.**;!*
+    - -XX:FlightRecorderOptions=stackdepth=256
+    - -XX:+UnlockDiagnosticVMOptions
+    - -XX:+DebugNonSafepoints
+    - --add-opens=java.base/java.nio=ALL-UNNAMED
+    - --add-opens=java.base/java.io=ALL-UNNAMED
+    - --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+    # - --add-modules=jdk.incubator.vector
+    - -Dlog4j2.disable.jmx=true
+    # - -XX:MaxMetaspaceSize=1024m
+    # - -XX:ReservedCodeCacheSize=512m
+    # - -XX:-DontCompileHugeMethods
 
-# This mitigates a DDoS vector.
-# -Djdk.tls.rejectClientInitiatedRenegotiation=true
+# neo4j_custom_jvm:
+#   dbms.tx_state.max_off_heap_memory: 512m
 
-# Enable remote debugging
-# -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-
-# This filter prevents deserialization of arbitrary objects via java object serialization,
-# addressing potential vulnerabilities.
-# By default this filter whitelists all neo4j classes, as well as classes from the hazelcast
-# library and the java standard library.
-# These defaults should only be modified by expert users!
-# For more details (including filter syntax) see: https://openjdk.java.net/jeps/290
-# -Djdk.serialFilter=java.**;org.neo4j.**;com.neo4j.**;com.hazelcast.**;net.sf.ehcache.Element;com.sun.proxy.*;org.openjdk.jmh.**;!*
-
-neo4j_jvm_additional:
-  - -XX:+UseG1GC
-  - -XX:-OmitStackTraceInFastThrow
-  - -XX:+AlwaysPreTouch
-  - -XX:+UnlockExperimentalVMOptions
-  - -XX:+TrustFinalNonStaticFields
-  - -XX:+DisableExplicitGC
-  - -XX:+ExitOnOutOfMemoryError
-  - -Djdk.nio.maxCachedBufferSize=262144
-  - -Dio.netty.tryReflectionSetAccessible=true
-  - -Djdk.tls.ephemeralDHKeySize=2048
-  - -Djdk.tls.rejectClientInitiatedRenegotiation=true
-  - -Dunsupported.dbms.udc.source=debian
-  - "-Djava.rmi.server.hostname={{ ansible_nodename }}"
-  - -Dcom.sun.management.jmxremote=true
-  - -Dcom.sun.management.jmxremote.port=3637
-  - -Dcom.sun.management.jmxremote.local.only=false
-  - -Dcom.sun.management.jmxremote.authenticate=false
-  - -Dcom.sun.management.jmxremote.ssl=false
-  - -Djdk.serialFilter=java.**;org.neo4j.**;com.neo4j.**;com.hazelcast.**;net.sf.ehcache.Element;com.sun.proxy.*;org.openjdk.jmh.**;!*
-
-## CACHE
-neo4j_memory_pagecache_size: 512m
-
-## ADDITIONAL CUSTOM
-neo4j_custom_additional:
-  dbms.tx_state.max_off_heap_memory: 512m
-
-## NETWORK
-neo4j_address: 0.0.0.0
-neo4j_address_name: "{{ ansible_nodename }}"
-neo4j_bolt_enabled: "true"
-neo4j_bolt_port: 7687
-neo4j_http_enabled: "true"
-neo4j_http_port: 7474
-neo4j_https_enabled: "false"
-neo4j_https_port: 7473
-neo4j_threads_worker: 2
-
-## LOGGING
-neo4j_log_http_enabled: "true"
-neo4j_log_http_rotation_keep_number: 5
-neo4j_log_http_rotation_size: 20m
-neo4j_log_gc_enabled: "true"
-# see https://docs.oracle.com/en/java/javase/11/tools/java.html#GUID-BE93ABDC-999C-4CB5-A88B-1994AAAC74D5
-neo4j_log_gc_options: -Xlog:gc*,safepoint,age*=trace
-neo4j_log_gc_rotation_keep_number: 5
-neo4j_log_gc_rotation_size: 20
-neo4j_log_debug_level: INFO
-neo4j_log_debug_rotation_keep_number: 7
-neo4j_log_debug_rotation_size: 20m
-
-## PLUGINS (example)
-# neo4j_plugins:
-#   - name: neo4j-streams
-#     url: https://github.com/neo4j-contrib/neo4j-streams/releases/download/4.0.0/neo4j-streams-4.0.0.jar
-
-# neo4j_plugins_configuration:
-#   - name: kafka.zookeeper.connect
-#     value: localhost:2181
-#   - name: kafka.bootstrap.servers
-#     value: localhost:9092
-
-
-# MISCELLANEOUS
-neo4j_force_reinstall: false
+neo4j_login_user:
+  name: admin
+  password: admin
