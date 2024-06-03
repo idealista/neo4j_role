@@ -17,7 +17,7 @@
 
   vars_files:
     - ../../defaults/main.yml
-    - group_vars/neo4j_group.yml
+    - group_vars/all.yml
 
   tasks:
     - name: Download and install Goss
