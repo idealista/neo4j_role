@@ -6,6 +6,7 @@ neo4j_version: 5.20.0
 neo4j_tag: "{{ neo4j_version }}-{{ neo4j_edition }}"
 neo4j_edition: community
 
+docker_service_manage: false
 docker_service_state: stopped
 docker_service_enabled: false
 docker_restart_handler_state: stopped

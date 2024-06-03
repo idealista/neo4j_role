@@ -4,4 +4,4 @@ roles:
   - name: docker
     src: https://github.com/idealista/docker_role.git
     scm: git
-    version: 4.2.0
+    version: 7.1.0

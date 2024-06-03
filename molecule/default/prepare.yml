@@ -5,10 +5,5 @@
   gather_facts: true
   roles:
     - role: docker
-      vars:
-        docker_service_state: stopped
-        docker_service_enabled: false
-        docker_restart_handler_state: stopped
-        docker_service_manage: false
       tags: docker
       when: neo4j_docker_check
