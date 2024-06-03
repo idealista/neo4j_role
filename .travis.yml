@@ -15,7 +15,6 @@ env:
   jobs:
     - MOLECULE_DISTRO=debian:bullseye-slim
 script:
-  - export DOCKER_BASE_IMAGE=${DOCKER_BASE_IMAGE}
   - pipenv run molecule test
 
 notifications:
