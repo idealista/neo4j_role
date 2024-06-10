@@ -81,6 +81,7 @@ neo4j_docker_definition:
   services:
     neo4j:
       image: "{{ neo4j_image }}:{{ neo4j_tag }}"
+      restart: always
       networks:
         - neo4j
       container_name: "{{ neo4j_docker_container_name }}"
@@ -107,6 +108,7 @@ neo4j_config_file: "{{ neo4j_docker_conf_path }}/neo4j.conf"
 # neo4j_custom_user_logs_config_file: "{{ playbook_dir }}/files/user-logs.xml"
 
 neo4j_docker_compose_version: "2.4"
+neo4j_docker_compose_restart: "always"
 neo4j_docker_compose_networks:
   - name: "{{ neo4j_project_name }}"
     external: true
