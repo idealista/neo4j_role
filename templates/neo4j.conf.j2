@@ -243,9 +243,8 @@ server.logs.gc.options={{ neo4j_logging.gc_options }}
 # Number of GC logs to keep.
 server.logs.gc.rotation.keep_number={{ neo4j_logging.gc_rotation_keep_number }}
 {%- endif +%}
-
-{%- if neo4j_logging.query_enabled is defined +%}
-# Size of each GC log that is kept.
+{%- if neo4j_logging.gc_rotation_size is defined +%}
+# Size of GC logs to rotate.
 server.logs.gc.rotation.size={{ neo4j_logging.gc_rotation_size }}
 {%- endif +%}
 {%- endif +%}

@@ -4,6 +4,9 @@ services:
   {{ neo4j_docker_service_name }}:
     image: {{ neo4j_image }}:{{ neo4j_tag }}
     container_name: {{ neo4j_docker_container_name }}
+{% if neo4j_docker_compose_restart is defined %}
+    restart: {{ neo4j_docker_compose_restart }}
+{% endif %}
 {% if neo4j_docker_compose_networks is defined %}
     networks:
 {% for network in neo4j_docker_compose_networks %}

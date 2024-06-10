@@ -7,6 +7,16 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+## [3.0.1] - 2024-06-10
+
+### Added
+
+- *restart compose* @jmonterrubio
+
+### Fixed
+
+- *GC rotation size* @jmonterrubio
+
 ## [3.0.0] - 2024-05-31
 
 ### Added
@@ -57,6 +67,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 - *First release* @jmonterrubio
 
 [Unreleased]: https://github.com/idealista/neo4j_role/tree/develop
+[3.0.1]: https://github.com/idealista/neo4j_role/tree/3.0.1
 [3.0.0]: https://github.com/idealista/neo4j_role/tree/3.0.0
 [2.1.0]: https://github.com/idealista/neo4j_role/tree/2.1.0
 [2.0.0]: https://github.com/idealista/neo4j_role/tree/2.0.0
