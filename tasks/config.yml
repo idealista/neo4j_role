@@ -79,4 +79,3 @@
     mode: 0774
   when: neo4j_custom_user_logs_config_file is not defined
   notify: NEO4J | Restart containers
-

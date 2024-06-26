@@ -36,13 +36,6 @@ provisioner:
 
 scenario:
   name: default
-  # converge_sequence:
-    #- dependency
-    #- create
-    #- prepare
-    #- converge
-    #- check
-    #- destroy
 
 verifier:
   name: ansible
