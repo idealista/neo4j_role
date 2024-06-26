@@ -59,6 +59,8 @@ neo4j_required_python_packages:
 neo4j_project_name: "{{ app_name }}"
 neo4j_docker_container_name: "{{ neo4j_project_name }}"
 neo4j_docker_service_name: "{{ neo4j_project_name }}"
+neo4j_docker_compose_pull: always
+neo4j_docker_compose_recreate: always
 
 # Using compose file
 # Ansible docker compose file template
@@ -77,7 +79,7 @@ neo4j_docker_compose_file: "{{ neo4j_docker_files_path }}/docker-compose.yml"
 # Using definitions
 neo4j_install_using_definition: false
 neo4j_docker_definition:
-  version: '2.4'
+  version: '3.8'
   services:
     neo4j:
       image: "{{ neo4j_image }}:{{ neo4j_tag }}"
@@ -107,7 +109,7 @@ neo4j_config_file: "{{ neo4j_docker_conf_path }}/neo4j.conf"
 # neo4j_custom_server_logs_config_file: "{{ playbook_dir }}/files/server-logs.xml"
 # neo4j_custom_user_logs_config_file: "{{ playbook_dir }}/files/user-logs.xml"
 
-neo4j_docker_compose_version: "2.4"
+neo4j_docker_compose_version: "3.8"
 neo4j_docker_compose_restart: "always"
 neo4j_docker_compose_networks:
   - name: "{{ neo4j_project_name }}"

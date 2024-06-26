@@ -11,7 +11,7 @@
           - 'yml'
 
     - name: NEO4J | Compose Remove (docker-compose.yml)
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_name: "{{ neo4j_project_name }}"
         project_src: "{{ neo4j_docker_files_path }}"
         state: absent
@@ -21,7 +21,7 @@
       failed_when: false
 
     - name: NEO4J | Compose Remove (definition)
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_name: "{{ neo4j_project_name }}"
         definition: "{{ neo4j_docker_definition }}"
         state: absent

@@ -1,19 +1,17 @@
 ---
 
 - name: Restart container docker compose
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_name: "{{ neo4j_project_name }}"
     project_src: "{{ neo4j_docker_files_path }}"
-    pull: true
-    state: present
-    restarted: true
+    pull: "{{ neo4j_docker_compose_pull }}"
+    state: restarted
   when: not neo4j_install_using_definition
 
 - name: Restart container docker definitions
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_name: "{{ neo4j_project_name }}"
     definition: "{{ neo4j_docker_definition }}"
-    pull: true
-    state: present
-    restarted: true
+    pull: "{{ neo4j_docker_compose_pull }}"
+    state: restarted
   when: neo4j_install_using_definition
