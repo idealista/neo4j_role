@@ -60,7 +60,7 @@ neo4j_project_name: "{{ app_name }}"
 neo4j_docker_container_name: "{{ neo4j_project_name }}"
 neo4j_docker_service_name: "{{ neo4j_project_name }}"
 neo4j_docker_compose_pull: always
-neo4j_docker_compose_recreate: always
+neo4j_docker_compose_recreate: auto
 
 # Using compose file
 # Ansible docker compose file template
