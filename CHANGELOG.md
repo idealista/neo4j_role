@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+## [3.1.0] - 2024-06-27
+
+### Changed
+
+- *Docker compose module update to v2* @ultraheroe
+
 ## [3.0.1] - 2024-06-10
 
 ### Added
