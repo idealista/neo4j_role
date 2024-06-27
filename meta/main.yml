@@ -13,6 +13,6 @@ galaxy_info:
     - name: Debian
       versions:
         - bullseye
-  dependencies:
-    - role: idealista.docker
-      when: lookup('env', 'MOLECULE_FILE')
+dependencies:
+  - role: idealista.docker
+    when: lookup('env', 'MOLECULE_FILE')

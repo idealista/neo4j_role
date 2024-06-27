@@ -14,7 +14,7 @@ docker_restart_handler_state: stopped
 neo4j_docker_data_path: /tmp/neo4j/data
 neo4j_docker_logs_path: /tmp/neo4j/logs
 neo4j_docker_conf_path: /tmp/neo4j/conf
-#neo4j_docker_user: root
+# neo4j_docker_user: root
 
 # NEO4J docker
 neo4j_docker_compose_file: "{{ neo4j_docker_files_path }}/docker-compose.yml"
@@ -27,7 +27,7 @@ neo4j_docker_compose_volumes:
   - "{{ neo4j_docker_data_path }}:/data"
   - "{{ neo4j_docker_logs_path }}:/logs"
   - "{{ neo4j_docker_conf_path }}:/conf"
-  #- "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/test-config:{{ neo4j_docker_conf_path }}"
+  # - "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/test-config:{{ neo4j_docker_conf_path }}"
 
 neo4j_override_default_config: true
 

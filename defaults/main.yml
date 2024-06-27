@@ -59,6 +59,8 @@ neo4j_required_python_packages:
 neo4j_project_name: "{{ app_name }}"
 neo4j_docker_container_name: "{{ neo4j_project_name }}"
 neo4j_docker_service_name: "{{ neo4j_project_name }}"
+neo4j_docker_compose_pull: always
+neo4j_docker_compose_recreate: auto
 
 # Using compose file
 # Ansible docker compose file template
@@ -77,7 +79,7 @@ neo4j_docker_compose_file: "{{ neo4j_docker_files_path }}/docker-compose.yml"
 # Using definitions
 neo4j_install_using_definition: false
 neo4j_docker_definition:
-  version: '2.4'
+  version: '3.8'
   services:
     neo4j:
       image: "{{ neo4j_image }}:{{ neo4j_tag }}"
@@ -85,15 +87,15 @@ neo4j_docker_definition:
       networks:
         - neo4j
       container_name: "{{ neo4j_docker_container_name }}"
-      ports: 
+      ports:
         - "{{ neo4j_http_port }}:{{ neo4j_http_port }}"
         - "{{ neo4j_bolt_port }}:{{ neo4j_bolt_port }}"
       environment:
         - NEO4J_AUTH={{ neo4j_login_user.name }}/{{ neo4j_login_user.password }}
       volumes:
-          - "{{ neo4j_docker_conf_path }}:/conf"
-          - "{{ neo4j_docker_data_path }}:/data"
-          - "{{ neo4j_docker_logs_path }}:/logs"
+        - "{{ neo4j_docker_conf_path }}:/conf"
+        - "{{ neo4j_docker_data_path }}:/data"
+        - "{{ neo4j_docker_logs_path }}:/logs"
   networks:
     neo4j:
       name: "{{ neo4j_project_name }}"
@@ -107,7 +109,7 @@ neo4j_config_file: "{{ neo4j_docker_conf_path }}/neo4j.conf"
 # neo4j_custom_server_logs_config_file: "{{ playbook_dir }}/files/server-logs.xml"
 # neo4j_custom_user_logs_config_file: "{{ playbook_dir }}/files/user-logs.xml"
 
-neo4j_docker_compose_version: "2.4"
+neo4j_docker_compose_version: "3.8"
 neo4j_docker_compose_restart: "always"
 neo4j_docker_compose_networks:
   - name: "{{ neo4j_project_name }}"
@@ -129,7 +131,7 @@ neo4j_docker_compose_volumes:
 neo4j_configuration:
 neo4j_server_directories:
   data: /data
-#   plugins: plugins
+  # plugins: plugins
   logs: /logs
 #   lib: lib
 #   run: run
@@ -141,11 +143,11 @@ neo4j_server_directories:
 # neo4j_usage_report_enabled: false
 
 neo4j_memory:
-#   heap_initial_size: 512m
-#   heap_max_size: 512m
+  # heap_initial_size: 512m
+  # heap_max_size: 512m
   pagecache_size: 512m
-#   transaction_total_max: 256m
-#   transaction_max: 16m
+  # transaction_total_max: 256m
+  # transaction_max: 16m
 
 neo4j_network:
   default_listen_address: 0.0.0.0
@@ -160,7 +162,7 @@ neo4j_network:
   https_enabled: "false"
   # https_listen_address: 7473
   # https_advertised_address: 7473
-  # threads_worker_count: 
+  # threads_worker_count:
 
 # neo4j_logging:
 #   http_enabled: "true"
