@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a ch
 
 [Full Changelog](https://github.com/idealista/neo4j_role/compare/master...develop)
 
+## [3.1.1] - 2024-07-03
+
+### Fixed
+
+- *Remove idealista.docker dependency* @ultraheroe
+
 ## [3.1.0] - 2024-06-27
 
 ### Changed
